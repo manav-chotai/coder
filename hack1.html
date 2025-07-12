@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill Swap Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4cc9f0;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --success-color: #4bb543;
+            --warning-color: #ffcc00;
+            --error-color: #f44336;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background-color: white;
+            box-shadow: var(--box-shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 15px 0;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark-color);
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: var(--border-radius);
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            background-size: 200% auto;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.3));
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+        .btn-primary:hover::after {
+            transform: translateX(100%);
+        }
+        .btn-primary:hover {
+            background-position: right center;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .hero {
+            padding: 60px 0;
+            text-align: center;
+            background: linear-gradient(-45deg, #4361ee, #3a0ca3, #4cc9f0, #3f37c9);
+            background-size: 300% 300%;
+            animation: gradientBG 15s ease infinite;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .animate-pop {
+            animation: popIn 0.5s ease-out forwards;
+        }
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            80% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .hero p {
+            font-size: 18px;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+
+        .search-bar {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 12px 20px;
+            border-radius: var(--border-radius) 0 0 var(--border-radius);
+            border: none;
+            font-size: 16px;
+        }
+
+        .search-bar button {
+            padding: 12px 20px;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        main {
+            padding: 40px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .feature-card {
+            background-color: rgba(255,255,255,0.9);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 8px 32px rgba(67, 97, 238, 0.1);
+            text-align: center;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            border-color: var(--primary-color);
+        }
+
+        .feature-card i {
+            font-size: 40px;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 15px;
+        }
+
+        /* User Profile Card Styles */
+        .profile-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .profile-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .profile-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(67, 97, 238, 0.2);
+            filter: drop-shadow(0 0 8px rgba(67, 97, 238, 0.3));
+        }
+        .profile-image {
+            transition: all 0.5s ease;
+        }
+        .profile-card:hover .profile-image {
+            transform: scale(1.05);
+        }
+
+        .profile-image {
+            width: 100%;
+            height: 200px;
+            background-color: #f0f0f0;
+            position: relative;
+        }
+
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-info {
+            padding: 20px;
+        }
+
+        .profile-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .profile-location {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .skills-section {
+            margin-bottom: 15px;
+        }
+
+        .skills-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .skill-tag {
+            background-color: #e9ecef;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .availability {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .profile-actions {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 30px;
+            position: relative;
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            border: 1px solid #ddd;
+            font-size: 16px;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        textarea.form-control {
+            min-height: 100px;
+        }
+
+        /* Swap Request Section */
+        .requests-section {
+            margin-top: 40px;
+        }
+
+        .requests-tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            border-bottom: 3px solid var(--primary-color);
+            font-weight: 600;
+        }
+
+        .request-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .request-info {
+            flex: 1;
+        }
+
+        .request-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Footer Styles */
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        .copyright {
+            color: #aaa;
+        }
+
+        /* Admin Panel Styles */
+        .admin-panel {
+            background-color: #f8f9fa;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            margin-bottom: 40px;
+        }
+
+        .admin-section {
+            margin-bottom: 30px;
+        }
+
+        .admin-section h3 {
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .admin-list {
+            list-style: none;
+        }
+
+        .admin-list-item {
+            background-color: white;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .search-bar {
+                flex-direction: column;
+            }
+
+            .search-bar input {
+                border-radius: var(--border-radius);
+                margin-bottom: 10px;
+            }
+
+            .search-bar button {
+                border-radius: var(--border-radius);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container nav-container">
+            <a href="#" class="logo">SkillSwap</a>
+            <nav class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#profiles">Find Users</a>
+                <a href="#requests">My Requests</a>
+                <a href="#admin" id="admin-link" style="display: none;">Admin Panel</a>
+            </nav>
+            <div class="auth-buttons">
+                <button class="btn btn-outline" id="login-btn">Login</button>
+                <button class="btn btn-primary" id="register-btn">Register</button>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1 class="hero-title animate-pop">Swap Skills, Grow Together</h1>
+            <p>Connect with people who share your passion for learning and exchanging skills. Find the perfect match for your needs!</p>
+            <div class="search-bar">
+                <input type="text" placeholder="Search skills (e.g., Photoshop, Excel...)">
+                <button>Search</button>
+            </div>
+        </div>
+    </section>
+
+    <main class="container">
+        <section id="features">
+            <h2 class="section-title">How It Works</h2>
+            <div class="features">
+                <div class="feature-card">
+                    <i>📝</i>
+                    <h3>Create Profile</h3>
+                    <p>List your skills and what you're looking for. Set your availability and preferences.</p>
+                </div>
+                <div class="feature-card">
+                    <i>🔍</i>
+                    <h3>Find Matches</h3>
+                    <p>Search for users with skills you need who want what you offer.</p>
+                </div>
+                <div class="feature-card">
+                    <i>🤝</i>
+                    <h3>Swap Skills</h3>
+                    <p>Request swaps, manage your offers, and start exchanging knowledge!</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="profiles">
+            <h2 class="section-title">Available Profiles</h2>
+            <div class="profile-section" id="profile-grid">
+                <!-- Sample profiles will be added dynamically -->
+            </div>
+        </section>
+
+        <section id="requests">
+            <h2 class="section-title">My Swaps</h2>
+            <div class="requests-tabs">
+                <div class="tab active" onclick="showRequests('pending')">Pending (3)</div>
+                <div class="tab" onclick="showRequests('accepted')">Accepted (2)</div>
+                <div class="tab" onclick="showRequests('completed')">Completed (5)</div>
+            </div>
+            <div class="requests-section">
+                <!-- Requests will be added dynamically -->
+            </div>
+        </section>
+
+        <section id="admin" style="display: none;">
+            <h2 class="section-title">Admin Panel</h2>
+            <div class="admin-panel">
+                <div class="admin-section">
+                    <h3>User Reports</h3>
+                    <ul class="admin-list" id="user-reports">
+                        <!-- User reports will be added dynamically -->
+                    </ul>
+                </div>
+                <div class="admin-section">
+                    <h3>Skill Moderation</h3>
+                    <ul class="admin-list" id="skill-moderation">
+                        <!-- Skills to moderate will be added dynamically -->
+                    </ul>
+                </div>
+                <div class="admin-section">
+                    <h3>Send Platform Message</h3>
+                    <div class="form-group">
+                        <textarea class="form-control" placeholder="Write your platform-wide message here..."></textarea>
+                    </div>
+                    <button class="btn btn-primary">Send Message</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modals -->
+    <div class="modal" id="login-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Login</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="register-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Register</h2>
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="register-name">Full Name</label>
+                    <input type="text" id="register-name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-email">Email</label>
+                    <input type="email" id="register-email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-password">Password</label>
+                    <input type="password" id="register-password" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-confirm">Confirm Password</label>
+                    <input type="password" id="register-confirm" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Register</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="profile-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Edit My Profile</h2>
+            <form id="profile-form">
+                <div class="form-group">
+                    <label for="profile-name">Name</label>
+                    <input type="text" id="profile-name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="profile-location">Location (Optional)</label>
+                    <input type="text" id="profile-location" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Profile Photo</label>
+                    <input type="file" id="profile-photo" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="profile-skills">Skills You Offer (comma separated)</label>
+                    <textarea id="profile-skills" class="form-control" placeholder="e.g., Photoshop, Web Design, French"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="profile-wanted">Skills You Want (comma separated)</label>
+                    <textarea id="profile-wanted" class="form-control" placeholder="e.g., Excel, Guitar, Spanish"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="profile-availability">Availability</label>
+                    <textarea id="profile-availability" class="form-control" placeholder="e.g., Weekends, Evenings after 6pm"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="profile-private"> Make my profile private
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-primary">Save Profile</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="swap-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Request Skill Swap</h2>
+            <form id="swap-form">
+                <div class="form-group">
+                    <label>Swap Request</label>
+                    <div id="swap-details" style="margin-bottom: 15px;"></div>
+                </div>
+                <div class="form-group">
+                    <label for="swap-message">Message (Optional)</label>
+                    <textarea id="swap-message" class="form-control" placeholder="Add a personal message..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="swap-offers">Skills You'll Offer in Return</label>
+                    <select id="swap-offers" class="form-control" multiple></select>
+                </div>
+                <button type="submit" class="btn btn-primary">Send Request</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="#">About</a>
+                <a href="#">Terms</a>
+                <a href="#">Privacy</a>
+                <a href="#">Contact</a>
+                <a href="#">Help</a>
+            </div>
+            <p class="copyright">© 2023 SkillSwap. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Sample data
+        const users = [
+            {
+                id: 1,
+                name: "Alex Johnson",
+                location: "New York, NY",
+                image: "https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/bc1138d2-671f-4137-8283-89b341e53653.png",
+                skillsOffered: ["Photoshop", "Illustrator", "Graphic Design"],
+                skillsWanted: ["Spanish", "Cooking", "Photography"],
+                availability: "Weekends",
+                isPrivate: false
+            },
+            {
+                id: 2,
+                name: "Sarah Williams",
+                location: "Chicago, IL",
+                image: "https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/48be1a56-a3c0-42cd-8a19-ab0f5e62ce38.png",
+                skillsOffered: ["Spanish", "French"],
+                skillsWanted: ["SEO", "Social Media"],
+                availability: "Evenings",
+                isPrivate: false
+            },
+            {
+                id: 3,
+                name: "Mike Chen",
+                location: "San Francisco, CA",
+                image: "https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/7513bc66-ec59-40ee-80f2-ac6178e481c9.png",
+                skillsOffered: ["Excel", "Data Analysis"],
+                skillsWanted: ["Photoshop", "Illustrator"],
+                availability: "Weekdays",
+                isPrivate: false
+            },
+            {
+                id: 4,
+                name: "Priya Patel",
+                location: "Boston, MA",
+                image: "https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/1f4f33bb-1fee-4ffb-a5ef-d70acf588568.png",
+                skillsOffered: ["Yoga", "Meditation"],
+                skillsWanted: ["Spanish", "German"],
+                availability: "Flexible",
+                isPrivate: false
+            },
+            {
+                id: 5,
+                name: "David Wilson",
+                location: "Seattle, WA",
+                image: "https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/acba37e4-d620-4566-b85d-05f3e1a52129.png",
+                skillsOffered: ["Guitar", "Music Theory"],
+                skillsWanted: ["Excel", "Python"],
+                availability: "Weekends",
+                isPrivate: false
+            }
+        ];
+
+        const requests = {
+            completed: [],
+            pending: [
+                {
+                    id: 101,
+                    userId: 2,
+                    userName: "Sarah Williams",
+                    skillOffered: "Spanish",
+                    skillWanted: "SEO",
+                    message: "Would be happy to teach you Spanish in exchange for SEO help!",
+                    date: "2023-05-10"
+                },
+                {
+                    id: 102,
+                    userId: 5,
+                    userName: "David Wilson",
+                    skillOffered: "Guitar Lessons", 
+                    skillWanted: "Python Basics",
+                    message: "I can teach guitar in exchange for Python help",
+                    date: "2023-05-11"
+                }
+            ],
+            accepted: [
+                {
+                    id: 201,
+                    userId: 3,
+                    userName: "Mike Chen",
+                    skillOffered: "Excel",
+                    skillWanted: "Photoshop",
+                    message: "Let's meet Saturday afternoon?",
+                    date: "2023-05-05",
+                    status: 'accepted'
+                },
+                {
+                    id: 202,
+                    userId: 4,
+                    userName: "Priya Patel",
+                    skillOffered: "Yoga",
+                    skillWanted: "Spanish",
+                    message: "Available weekends", 
+                    date: "2023-05-08",
+                    status: 'accepted'
+                }
+            ],
+            rejected: [
+                {
+                    id: 301,
+                    userId: 1,
+                    userName: "Alex Johnson",
+                    skillOffered: "Graphic Design",
+                    skillWanted: "Cooking",
+                    message: "Need cooking lessons",
+                    date: "2023-05-01",
+                    status: 'rejected',
+                    reason: 'Not available'
+                }
+            ]
+        };
+
+        const adminData = {
+            reports: [
+                {
+                    id: 1001,
+                    userId: 6,
+                    userName: "SpamUser123",
+                    reason: "Inappropriate skill description",
+                    date: "2023-05-09"
+                }
+            ],
+            skillsToModerate: [
+                {
+                    id: 2001,
+                    userId: 7,
+                    userName: "NewUser55",
+                    skill: "Questionable Service",
+                    description: "Offering something inappropriate",
+                    date: "2023-05-08"
+                }
+            ]
+        };
+
+        // Current user
+        let currentUser = null;
+        const isAdmin = false; // Change to true to test admin view
+
+        // DOM Elements
+        const loginBtn = document.getElementById('login-btn');
+        const registerBtn = document.getElementById('register-btn');
+        const loginModal = document.getElementById('login-modal');
+        const registerModal = document.getElementById('register-modal');
+        const profileModal = document.getElementById('profile-modal');
+        const swapModal = document.getElementById('swap-modal');
+        const closeButtons = document.querySelectorAll('.close-modal');
+        const profileGrid = document.getElementById('profile-grid');
+        const adminLink = document.getElementById('admin-link');
+        const adminSection = document.getElementById('admin');
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            renderProfiles();
+            showRequests('accepted');
+            // Initialize scroll animations
+            const animateOnScroll = () => {
+                document.querySelectorAll('.feature-card, .profile-card').forEach(card => {
+                    const cardPosition = card.getBoundingClientRect().top;
+                    const screenPosition = window.innerHeight / 1.3;
+                    if(cardPosition < screenPosition) {
+                        card.style.opacity = "1";
+                        card.style.transform = "translateY(0)";
+                    }
+                });
+            };
+            
+            // Set initial styles
+            document.querySelectorAll('.feature-card, .profile-card').forEach(card => {
+                card.style.opacity = "0";
+                card.style.transform = "translateY(20px)";
+                card.style.transition = "all 0.6s ease";
+            });
+            
+            window.addEventListener('scroll', animateOnScroll);
+            animateOnScroll(); // Run once on load
+            
+            if (isAdmin) {
+                adminLink.style.display = 'block';
+                renderAdminData();
+            }
+        });
+
+        // Modal handlers
+        loginBtn.addEventListener('click', () => loginModal.style.display = 'flex');
+        registerBtn.addEventListener('click', () => registerModal.style.display = 'flex');
+
+        closeButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                this.closest('.modal').style.display = 'none';
+            });
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target.className === 'modal') {
+                event.target.style.display = 'none';
+            }
+        });
+
+        // Form submissions
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // In a real app, this would validate credentials with a server
+            currentUser = {
+                id: 999,
+                name: document.getElementById('login-email').value,
+                location: "Your City",
+                skillsOffered: [],
+                skillsWanted: [],
+                availability: "",
+                isPrivate: false
+            };
+            loginModal.style.display = 'none';
+            updateAuthState();
+        });
+
+        document.getElementById('register-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // In a real app, this would send data to server
+            currentUser = {
+                id: 999,
+                name: document.getElementById('register-name').value,
+                location: "",
+                skillsOffered: [],
+                skillsWanted: [],
+                availability: "",
+                isPrivate: false
+            };
+            registerModal.style.display = 'none';
+            updateAuthState();
+            // Show profile form for new users
+            setTimeout(() => profileModal.style.display = 'flex', 300);
+        });
+
+        document.getElementById('profile-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Update current user profile
+            currentUser.name = document.getElementById('profile-name').value;
+            currentUser.location = document.getElementById('profile-location').value;
+            currentUser.skillsOffered = document.getElementById('profile-skills').value.split(',').map(s => s.trim());
+            currentUser.skillsWanted = document.getElementById('profile-wanted').value.split(',').map(s => s.trim());
+            currentUser.availability = document.getElementById('profile-availability').value;
+            currentUser.isPrivate = document.getElementById('profile-private').checked;
+            profileModal.style.display = 'none';
+            renderProfiles();
+        });
+
+        // Admin panel toggle
+        adminLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            adminSection.style.display = adminSection.style.display === 'none' ? 'block' : 'none';
+        });
+
+        // Update UI based on auth state
+        function updateAuthState() {
+            if (currentUser) {
+                loginBtn.textContent = 'My Profile';
+                loginBtn.removeEventListener('click', () => loginModal.style.display = 'flex');
+                loginBtn.addEventListener('click', function() {
+                    // Populate profile form with current user data
+                    document.getElementById('profile-name').value = currentUser.name;
+                    document.getElementById('profile-location').value = currentUser.location || '';
+                    document.getElementById('profile-skills').value = currentUser.skillsOffered.join(', ');
+                    document.getElementById('profile-wanted').value = currentUser.skillsWanted.join(', ');
+                    document.getElementById('profile-availability').value = currentUser.availability || '';
+                    document.getElementById('profile-private').checked = currentUser.isPrivate;
+                    profileModal.style.display = 'flex';
+                });
+                registerBtn.style.display = 'none';
+            }
+        }
+
+        // Render profiles
+        function renderProfiles() {
+            profileGrid.innerHTML = '';
+            users.forEach(user => {
+                if (!user.isPrivate) {
+                    const card = document.createElement('div');
+                    card.className = 'profile-card';
+                    card.innerHTML = `
+                        <div class="profile-image">
+                            <img src="${user.image}" alt="Profile photo of ${user.name}">
+                        </div>
+                        <div class="profile-info">
+                            <div class="profile-name">${user.name}</div>
+                            <div class="profile-location">${user.location}</div>
+                            <div class="skills-section">
+                                <div class="skills-title">Skills Offered</div>
+                                <div class="skills-list">
+                                    ${user.skillsOffered.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+                                </div>
+                            </div>
+                            <div class="skills-section">
+                                <div class="skills-title">Skills Wanted</div>
+                                <div class="skills-list">
+                                    ${user.skillsWanted.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+                                </div>
+                            </div>
+                            <div class="availability">Available: ${user.availability}</div>
+                            <div class="profile-actions">
+                                <button class="btn btn-outline view-profile">View</button>
+                                ${currentUser && currentUser.id !== user.id ? 
+                                    `<button class="btn btn-primary swap-btn" data-user-id="${user.id}">Request Swap</button>` : 
+                                    '<button class="btn btn-outline">Edit Profile</button>'
+                                }
+                            </div>
+                        </div>
+                    `;
+                    profileGrid.appendChild(card);
+                }
+            });
+
+            // Add swap request handlers
+            document.querySelectorAll('.swap-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const userId = parseInt(this.getAttribute('data-user-id'));
+                    const user = users.find(u => u.id === userId);
+                    if (user) {
+                        document.getElementById('swap-details').innerHTML = `
+                            <p>Requesting: <strong>${user.skillsOffered[0]}</strong></p>
+                            <p>From: <strong>${user.name}</strong></p>
+                        `;
+                        
+                        const offersSelect = document.getElementById('swap-offers');
+                        offersSelect.innerHTML = '';
+                        if (currentUser && currentUser.skillsOffered.length) {
+                            currentUser.skillsOffered.forEach(skill => {
+                                const option = document.createElement('option');
+                                option.value = skill;
+                                option.textContent = skill;
+                                offersSelect.appendChild(option);
+                            });
+                        } else {
+                            const option = document.createElement('option');
+                            option.textContent = 'You have no skills listed yet';
+                            offersSelect.appendChild(option);
+                        }
+                        
+                        swapModal.style.display = 'flex';
+                    }
+                });
+            });
+        }
+
+        // Render swap requests
+        let currentTab = 'pending';
+        
+        function showRequests(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.requests-tabs .tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            renderRequests();
+        }
+
+        function renderRequests() {
+            const requestsSection = document.querySelector('.requests-section');
+            requestsSection.innerHTML = '';
+
+            const requestsToShow = requests[currentTab] || [];
+            
+            requestsToShow.forEach(request => {
+                const reqElement = document.createElement('div');
+                reqElement.className = 'request-card';
+                let statusText = '';
+                let actionButtons = '';
+                
+                if(currentTab === 'pending') {
+                    statusText = `Pending: ${request.userName} wants to swap "${request.skillOffered}" for your "${request.skillWanted}"`;
+                    actionButtons = `
+                        <div class="request-actions">
+                            <button class="btn btn-primary" onclick="acceptRequest(${request.id})">Accept</button>
+                            <button class="btn btn-outline" onclick="rejectRequest(${request.id})">Reject</button>
+                        </div>`;
+                } 
+                else if(currentTab === 'accepted') {
+                    statusText = `Accepted: Swap scheduled with ${request.userName} (your "${request.skillWanted}" for their "${request.skillOffered}")`;
+                    actionButtons = `
+                        <div class="request-actions">
+                            <button class="btn btn-primary" onclick="completeRequest(${request.id})">Mark Completed</button>
+                        </div>`;
+                }
+                else if(currentTab === 'completed') {
+                    statusText = `Completed: Swapped "${request.skillOffered}" with ${request.userName} on ${request.completionDate}`;
+                    actionButtons = ''; // No actions for completed requests
+                }
+                
+                reqElement.innerHTML = `
+                    <div class="request-info">
+                        <strong>${statusText}</strong>
+                        <small>${request.date}</small>
+                        ${request.message ? `<p>${request.message}</p>` : ''}
+                    </div>
+                    ${actionButtons}
+                    <div class="request-actions">
+                        <button class="btn btn-primary" onclick="acceptRequest(${request.id})">Accept</button>
+                        <button class="btn btn-outline" onclick="rejectRequest(${request.id})">Reject</button>
+                    </div>
+                `;
+                requestsSection.appendChild(reqElement);
+            });
+
+            // Render accepted requests
+            requests.accepted.forEach(request => {
+                const reqElement = document.createElement('div');
+                reqElement.className = 'request-card';
+                reqElement.innerHTML = `
+                    <div class="request-info">
+                        <strong>Accepted:</strong> Swap scheduled with ${request.userName}
+                        (your "${request.skillWanted}" for their "${request.skillOffered}")
+                        <small>${request.date}</small>
+                    </div>
+                `;
+                requestsSection.appendChild(reqElement);
+            });
+        }
+
+        function acceptRequest(requestId) {
+            const request = requests.pending.find(r => r.id === requestId);
+            if (request) {
+                request.completionDate = new Date().toISOString().split('T')[0];
+                requests.accepted.push(request);
+                requests.pending = requests.pending.filter(r => r.id !== requestId);
+                updateRequestCounts();
+                renderRequests();
+            }
+        }
+
+        function completeRequest(requestId) {
+            const request = requests.accepted.find(r => r.id === requestId);
+            if (request) {
+                request.completionDate = new Date().toISOString().split('T')[0];
+                if (!requests.completed) {
+                    requests.completed = [];
+                }
+                requests.completed.push(request);
+                requests.accepted = requests.accepted.filter(r => r.id !== requestId);
+                updateRequestCounts();
+                showRequests('completed');
+            }
+        }
+
+        function rejectRequest(requestId) {
+            const request = requests.pending.find(r => r.id === requestId);
+            if (request) {
+                request.status = 'rejected';
+                request.reason = 'User rejected';
+                requests.rejected.push(request);
+                requests.pending = requests.pending.filter(r => r.id !== requestId);
+                updateRequestCounts();
+                renderRequests();
+            }
+        }
+
+        function updateRequestCounts() {
+            document.querySelector('.requests-tabs .tab:nth-child(1)').textContent = `Pending (${requests.pending.length})`;
+            document.querySelector('.requests-tabs .tab:nth-child(2)').textContent = `Accepted (${requests.accepted.length})`;
+            document.querySelector('.requests-tabs .tab:nth-child(3)').textContent = `Completed (${requests.completed?.length || 0})`;
+        }
+
+        // Render admin data
+        function renderAdminData() {
+            const reportsList = document.getElementById('user-reports');
+            reportsList.innerHTML = '';
+            
+            adminData.reports.forEach(report => {
+                const item = document.createElement('li');
+                item.className = 'admin-list-item';
+                item.innerHTML = `
+                    <div>
+                        <strong>Report #${report.id}</strong> - ${report.reason}<br>
+                        User: ${report.userName} (ID: ${report.userId})<br>
+                        Date: ${report.date}
+                    </div>
+                    <div class="admin-actions">
+                        <button class="btn btn-primary">View</button>
+                        <button class="btn btn-outline">Ban</button>
+                        <button class="btn btn-outline">Dismiss</button>
+                    </div>
+                `;
+                reportsList.appendChild(item);
+            });
+            
+            const skillsList = document.getElementById('skill-moderation');
+            skillsList.innerHTML = '';
+            
+            adminData.skillsToModerate.forEach(skill => {
+                const item = document.createElement('li');
+                item.className = 'admin-list-item';
+                item.innerHTML = `
+                    <div>
+                        <strong>Skill #${skill.id}</strong> - ${skill.skill}<br>
+                        Description: ${skill.description}<br>
+                        User: ${skill.userName} (ID: ${skill.userId})<br>
+                        Date: ${skill.date}
+                    </div>
+                    <div class="admin-actions">
+                        <button class="btn btn-primary">Approve</button>
+                        <button class="btn btn-outline">Reject</button>
+                    </div>
+                `;
+                skillsList.appendChild(item);
+            });
+        }
+    </script>
+</body>
+</html>
