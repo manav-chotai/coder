@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Skill Swap Platform</title>
+  <style>
+    body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f4ff; color: #222; min-height: 100vh; }
+    .container { max-width: 480px; margin: 40px auto; background: #fff; border-radius: 16px; box-shadow: 0 8px 24px rgba(26,62,140,.15); padding: 30px 24px; }
+    h1, h2 { color: #1a3e8c; text-align: center; }
+    .btn { padding: 14px 24px; border-radius: 8px; border: none; background: #1a3e8c; color: #fff; font-weight: 700; font-size: 1.1em; cursor: pointer; margin: 10px 0; width: 100%; }
+    .btn:hover { background: #0f2867; }
+    .hidden { display: none; }
+    label { font-weight: 600; color: #1a3e8c; display: block; margin-top: 15px; }
+    input[type=text], input[type=email], input[type=password], select { width: 100%; padding: 10px 14px; margin-top: 6px; border-radius: 8px; border: 1px solid #aac4ff; font-size: 1em; background: white; }
+    input[type=file] { margin-top: 8px; }
+    .request-card { background: #f7faff; border-radius: 12px; box-shadow: 0 4px 16px rgba(26,62,140,.10); padding: 16px 14px; margin-bottom: 16px; }
+    .actions { display: flex; gap: 10px; margin-top: 10px; }
+    .actions button { flex: 1; }
+    .user-card { background: #f7faff; border-radius: 14px; box-shadow: 0 4px 16px rgba(26,62,140,.1); padding: 18px 14px; margin-bottom: 16px; display: flex; align-items: center; gap: 18px; }
+    .user-avatar { width: 56px; height: 56px; border-radius: 50%; border: 3px solid #1a3e8c; object-fit: cover; background: #e6ecff; font-size: 2em; font-weight: 700; color: #1a3e8c; display: flex; align-items: center; justify-content: center; text-transform: uppercase; letter-spacing: 1px; }
+    .user-info { flex: 1; }
+    .center { text-align: center; }
+    @media (max-width: 600px) { .container { padding: 18px 2vw; } .user-card { flex-direction: column; align-items: flex-start; } }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Landing: Role Selection -->
+  <div id="landingPage">
+    <h1>Skill Swap Platform</h1>
+    <h2>Are you a User or Author?</h2>
+    <button class="btn" id="selectUser">User</button>
+    <button class="btn" id="selectAuthor">Author</button>
+  </div>
+
+  <!-- User Registration/Profile -->
+  <form id="userPage" class="hidden">
+    <h2>User Profile</h2>
+    <label>Name</label>
+    <input type="text" id="userName" required />
+    <label>Email</label>
+    <input type="email" id="userEmail" required />
+    <label>Profile Photo (optional)</label>
+    <input type="file" id="userPhoto" accept="image/*" />
+    <label>Skill Offered</label>
+    <input type="text" id="userSkillOffered" required />
+    <label>Skill Required</label>
+    <input type="text" id="userSkillWanted" required />
+    <label>Availability</label>
+    <select id="userAvailability" required>
+      <option value="">Select</option>
+      <option value="Weekend">Weekend</option>
+      <option value="Evening Only">Evening Only</option>
+      <option value="Morning">Morning</option>
+      <option value="Anytime">Anytime</option>
+    </select>
+    <label>Profile</label>
+    <select id="userProfilePublic" required>
+      <option value="public">Public</option>
+      <option value="private">Private</option>
+    </select>
+    <button class="btn" type="submit">Save & Continue</button>
+    <button class="btn" type="button" id="viewPublicProfilesBtn">View All Public Profiles</button>
+    <button class="btn" type="button" id="backToLandingBtn">Back</button>
+  </form>
+
+  <!-- Public Profiles Section -->
+  <div id="publicProfilesPage" class="hidden">
+    <h2>Public Profiles</h2>
+    <div id="publicProfilesList"></div>
+    <button class="btn" id="backToUserPageBtn">Back</button>
+  </div>
+
+  <!-- User: Send Request -->
+  <div id="userRequestPage" class="hidden">
+    <h2>Send Request to Author</h2>
+    <div class="center" style="margin-bottom:16px;">
+      <b>Your Skill:</b> <span id="dispSkillOffered"></span><br>
+      <b>Want to Learn:</b> <span id="dispSkillWanted"></span>
+    </div>
+    <label>Message (optional)</label>
+    <input type="text" id="userRequestMsg" />
+    <button class="btn" id="sendRequestBtn">Send Request</button>
+    <button class="btn" id="backToUserProfileBtn">Back</button>
+  </div>
+
+  <!-- Author Login -->
+  <form id="authorLoginPage" class="hidden">
+    <h2>Author Login</h2>
+    <label>Password</label>
+    <input type="password" id="authorPassword" required />
+    <button class="btn" type="submit">Login</button>
+    <button class="btn" type="button" id="backToLandingBtn2">Back</button>
+    <div id="authorLoginError" style="color:#d9534f; margin-top:10px;"></div>
+  </form>
+
+  <!-- Author Requests -->
+  <div id="authorRequestsPage" class="hidden">
+    <h2>Requests</h2>
+    <div id="requestsList"></div>
+    <button class="btn" id="backToAuthorLoginBtn">Back</button>
+  </div>
+
+  <!-- Finish Page -->
+  <div id="finishPage" class="hidden">
+    <h2>Thank you!</h2>
+    <div class="center">You may close this page.</div>
+    <button class="btn" id="backToLandingBtn3">Back to Home</button>
+  </div>
+
+</div>
+<script>
+const USERS_KEY = 'skillswap_users_final';
+const REQUESTS_KEY = 'skillswap_requests_final';
+const AUTHOR_PASS = 'admin123';
+
+let users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+let requests = JSON.parse(localStorage.getItem(REQUESTS_KEY)) || [];
+
+function saveUsers() { localStorage.setItem(USERS_KEY, JSON.stringify(users)); }
+function saveRequests() { localStorage.setItem(REQUESTS_KEY, JSON.stringify(requests)); }
+
+// Section Elements
+const landingPage = document.getElementById('landingPage');
+const userPage = document.getElementById('userPage');
+const userRequestPage = document.getElementById('userRequestPage');
+const authorLoginPage = document.getElementById('authorLoginPage');
+const authorRequestsPage = document.getElementById('authorRequestsPage');
+const publicProfilesPage = document.getElementById('publicProfilesPage');
+const finishPage = document.getElementById('finishPage');
+
+// Navigation
+function show(section) {
+  [landingPage, userPage, userRequestPage, authorLoginPage, authorRequestsPage, publicProfilesPage, finishPage].forEach(s => s.classList.add('hidden'));
+  section.classList.remove('hidden');
+}
+
+// --- Landing ---
+document.getElementById('selectUser').onclick = () => show(userPage);
+document.getElementById('selectAuthor').onclick = () => show(authorLoginPage);
+
+// --- User Registration/Profile ---
+let tempUserPhotoDataUrl = "";
+let currentUserId = null;
+document.getElementById('userPhoto').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(evt) { tempUserPhotoDataUrl = evt.target.result; };
+    reader.readAsDataURL(file);
+  } else {
+    tempUserPhotoDataUrl = "";
+  }
+});
+
+userPage.onsubmit = function(e) {
+  e.preventDefault();
+  // Save user
+  const user = {
+    id: Date.now().toString(),
+    name: document.getElementById('userName').value.trim(),
+    email: document.getElementById('userEmail').value.trim(),
+    photo: tempUserPhotoDataUrl || "",
+    skillsOffered: document.getElementById('userSkillOffered').value.trim(),
+    skillsWanted: document.getElementById('userSkillWanted').value.trim(),
+    availability: document.getElementById('userAvailability').value,
+    public: document.getElementById('userProfilePublic').value === "public"
+  };
+  users.push(user);
+  saveUsers();
+  currentUserId = user.id;
+  tempUserPhotoDataUrl = "";
+  document.getElementById('dispSkillOffered').textContent = user.skillsOffered;
+  document.getElementById('dispSkillWanted').textContent = user.skillsWanted;
+  show(userRequestPage);
+};
+
+document.getElementById('backToLandingBtn').onclick = function() { show(landingPage); };
+
+// --- User: View Public Profiles ---
+document.getElementById('viewPublicProfilesBtn').onclick = function() {
+  renderPublicProfiles();
+  show(publicProfilesPage);
+};
+document.getElementById('backToUserPageBtn').onclick = function() { show(userPage); };
+
+// --- Render Public Profiles ---
+function renderPublicProfiles() {
+  const publicProfilesList = document.getElementById('publicProfilesList');
+  const publicUsers = users.filter(u => u.public);
+  if (publicUsers.length === 0) {
+    publicProfilesList.innerHTML = "<i>No public profiles available.</i>";
+    return;
+  }
+  publicProfilesList.innerHTML = publicUsers.map(user => `
+    <div class="user-card">
+      ${
+        user.photo
+          ? `<img class="user-avatar" src="${user.photo}" alt="Profile" />`
+          : `<div class="user-avatar">${user.name.charAt(0).toUpperCase()}</div>`
+      }
+      <div class="user-info">
+        <strong>${user.name}</strong>
+        <p><b>Email:</b> ${user.email}</p>
+        <p><b>Skill Offered:</b> ${user.skillsOffered}</p>
+        <p><b>Skill Required:</b> ${user.skillsWanted}</p>
+        <p><b>Availability:</b> ${user.availability}</p>
+      </div>
+    </div>
+  `).join('');
+}
+
+// --- User Send Request ---
+document.getElementById('sendRequestBtn').onclick = function() {
+  const user = users.find(u => u.id === currentUserId);
+  const message = document.getElementById('userRequestMsg').value.trim();
+  requests.push({
+    id: Date.now().toString(),
+    from: user.id,
+    to: "author",
+    skillsOffered: user.skillsOffered,
+    skillsWanted: user.skillsWanted,
+    message,
+    status: 'pending'
+  });
+  saveRequests();
+  show(finishPage);
+};
+document.getElementById('backToUserProfileBtn').onclick = function() { show(userPage); };
+
+// --- Author Login ---
+authorLoginPage.onsubmit = function(e) {
+  e.preventDefault();
+  if (document.getElementById('authorPassword').value === AUTHOR_PASS) {
+    authorLoginPage.reset();
+    document.getElementById('authorLoginError').textContent = '';
+    renderRequests();
+    show(authorRequestsPage);
+  } else {
+    document.getElementById('authorLoginError').textContent = 'Incorrect password';
+  }
+};
+document.getElementById('backToLandingBtn2').onclick = function() { show(landingPage); };
+
+// --- Author Requests ---
+function renderRequests() {
+  const el = document.getElementById('requestsList');
+  if (!requests.length) {
+    el.innerHTML = "<i>No requests yet.</i>";
+    return;
+  }
+  el.innerHTML = requests.map(req => {
+    const user = users.find(u => u.id === req.from);
+    return `<div class="request-card" data-id="${req.id}">
+      <b>User:</b> ${user ? user.name : "Unknown"}<br>
+      <b>Skill Offered:</b> ${req.skillsOffered}<br>
+      <b>Skill Wanted:</b> ${req.skillsWanted}<br>
+      <b>Message:</b> ${req.message || "No message"}<br>
+      <span class="status ${req.status}">${req.status.toUpperCase()}</span>
+      ${req.status === 'pending' ? `
+        <div class="actions">
+          <button class="btn accept">Accept</button>
+          <button class="btn reject">Reject</button>
+        </div>
+      ` : ''}
+    </div>`;
+  }).join('');
+  // Attach actions
+  document.querySelectorAll('.request-card').forEach(card => {
+    const reqId = card.dataset.id;
+    const req = requests.find(r => r.id == reqId);
+    const acceptBtn = card.querySelector('.accept');
+    if (acceptBtn) acceptBtn.onclick = () => { req.status = 'accepted'; saveRequests(); renderRequests(); };
+    const rejectBtn = card.querySelector('.reject');
+    if (rejectBtn) rejectBtn.onclick = () => { req.status = 'rejected'; saveRequests(); renderRequests(); };
+  });
+}
+document.getElementById('backToAuthorLoginBtn').onclick = function() { show(authorLoginPage); };
+
+// --- Finish Page ---
+document.getElementById('backToLandingBtn3').onclick = function() { show(landingPage); };
+
+// --- Start on landing page ---
+show(landingPage);
+</script>
+</body>
+</html>
